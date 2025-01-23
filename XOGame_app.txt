@@ -1,0 +1,84 @@
+main.dart
+
+import 'package:flutter/material.dart';
+import 'xogame.dart';  // Import the XO game file
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Tic-Tac-Toe',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: XOGameScreen(),
+    );
+  }
+}
+
+class XOGameScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Tic-Tac-Toe')),
+      body: XOGame(),  // Integrate the XO game widget here
+    );
+  }
+}
+
+
+XOGame.dart
+class XOGame {
+  List<List<String>> board;
+  String currentPlayer;
+
+  XOGame()
+      : board = List.generate(3, (_) => List.filled(3, '')),
+        currentPlayer = 'X';
+
+  bool makeMove(int row, int col) {
+    if (board[row][col] == '') {
+      board[row][col] = currentPlayer;
+      currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+      return true;
+    }
+    return false;
+  }
+
+  String checkWinner() {
+    // Check rows, columns, and diagonals
+    for (var i = 0; i < 3; i++) {
+      if (board[i][0] == board[i][1] && board[i][1] == board[i][2] && board[i][0] != '') {
+        return board[i][0];
+      }
+      if (board[0][i] == board[1][i] && board[1][i] == board[2][i] && board[0][i] != '') {
+        return board[0][i];
+      }
+    }
+
+    // Check diagonals
+    if (board[0][0] == board[1][1] && board[1][1] == board[2][2] && board[0][0] != '') {
+      return board[0][0];
+    }
+    if (board[0][2] == board[1][1] && board[1][1] == board[2][0] && board[0][2] != '') {
+      return board[0][2];
+    }
+
+    // Check for a draw
+    if (board.every((row) => row.every((cell) => cell != ''))) {
+      return 'Draw';
+    }
+
+    return ''; // No winner yet
+  }
+
+  void reset() {
+    board = List.generate(3, (_) => List.filled(3, ''));
+    currentPlayer = 'X';
+  }
+}
+
